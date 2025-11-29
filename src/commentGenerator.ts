@@ -27,7 +27,18 @@ export class CommentGenerator {
     }
 
     private formatComment(text: string, style: { start: string; end?: string; linePrefix: string }): string {
-        const lines = text.split('\n').filter(line => line.trim());
+        // Clean up the text first
+        text = text.trim();
+        
+        // Remove any existing comment markers that AI might have added
+        text = text.replace(/^\/\/\s*/, '').replace(/^#\s*/, '').replace(/^--\s*/, '');
+        text = text.replace(/\/\*\s*/, '').replace(/\s*\*\//, '');
+        
+        const lines = text.split('\n').map(line => line.trim()).filter(line => line.length > 0);
+        
+        if (lines.length === 0) {
+            return `${style.start} No comment generated`;
+        }
         
         if (lines.length === 1) {
             // Single line comment

@@ -84,14 +84,25 @@ export class AIService {
         const commentLang = this.config.language === 'auto' ? 'the same language as the code' : 
                            this.config.language === 'zh' ? 'Chinese' : 'English';
 
-        return `Please generate a concise code comment for the following ${langName} code. 
-The comment should explain what the code does, its purpose, and any important details.
+        // Limit code length to avoid token limits
+        const maxCodeLength = 8000;
+        const codeToAnalyze = code.length > maxCodeLength 
+            ? code.substring(0, maxCodeLength) + '\n... (truncated)'
+            : code;
+
+        return `Please generate a concise and clear code comment for the following ${langName} code. 
+The comment should:
+1. Explain what the code does
+2. Describe its purpose and functionality
+3. Mention any important details, parameters, or return values if applicable
+
 Generate the comment in ${commentLang}.
-Only return the comment text, without any additional explanation or markdown formatting.
+IMPORTANT: Return ONLY the comment text without any markdown formatting, code blocks, or additional explanations.
+Do not include comment markers (like //, #, --) in your response - just the plain comment text.
 
 Code:
 \`\`\`${language}
-${code}
+${codeToAnalyze}
 \`\`\`
 
 Comment:`;
@@ -138,21 +149,28 @@ Comment:`;
     }
 
     private async callAnthropicAPI(prompt: string): Promise<string> {
-        const response = await this.axiosInstance.post('/messages', {
-            model: this.config.model || 'claude-3-sonnet-20240229',
-            max_tokens: 500,
-            messages: [
-                {
-                    role: 'user',
-                    content: prompt
+        // Anthropic API uses a different base URL and endpoint structure
+        const anthropicBaseURL = 'https://api.anthropic.com';
+        const response = await axios.post(
+            `${anthropicBaseURL}/v1/messages`,
+            {
+                model: this.config.model || 'claude-3-sonnet-20240229',
+                max_tokens: 500,
+                messages: [
+                    {
+                        role: 'user',
+                        content: prompt
+                    }
+                ]
+            },
+            {
+                headers: {
+                    'anthropic-version': '2023-06-01',
+                    'x-api-key': this.config.apiKey,
+                    'content-type': 'application/json'
                 }
-            ]
-        }, {
-            headers: {
-                'anthropic-version': '2023-06-01',
-                'x-api-key': this.config.apiKey
             }
-        });
+        );
 
         const comment = response.data.content[0]?.text?.trim();
         if (!comment) {
