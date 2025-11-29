@@ -1,0 +1,94 @@
+{
+  "name": "ai-comment",
+  "displayName": "AI Comment Generator",
+  "description": "AI-powered code comment generator for C++, Python, Lua, Java, JavaScript, and TypeScript",
+  "version": "0.1.0",
+  "engines": {
+    "vscode": "^1.74.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onCommand:ai-comment.generateComment",
+    "onCommand:ai-comment.generateFileComments"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "ai-comment.generateComment",
+        "title": "Generate Comment for Selection",
+        "category": "AI Comment"
+      },
+      {
+        "command": "ai-comment.generateFileComments",
+        "title": "Generate Comments for Entire File",
+        "category": "AI Comment"
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "ai-comment.generateComment",
+        "key": "ctrl+shift+c",
+        "mac": "cmd+shift+c"
+      }
+    ],
+    "configuration": {
+      "title": "AI Comment",
+      "properties": {
+        "ai-comment.apiProvider": {
+          "type": "string",
+          "enum": [
+            "openai",
+            "anthropic",
+            "custom"
+          ],
+          "default": "openai",
+          "description": "AI API provider to use"
+        },
+        "ai-comment.apiKey": {
+          "type": "string",
+          "default": "",
+          "description": "API key for the AI service",
+          "scope": "application"
+        },
+        "ai-comment.apiBaseUrl": {
+          "type": "string",
+          "default": "",
+          "description": "Custom API base URL (for custom provider)",
+          "scope": "application"
+        },
+        "ai-comment.model": {
+          "type": "string",
+          "default": "gpt-3.5-turbo",
+          "description": "Model to use for comment generation"
+        },
+        "ai-comment.language": {
+          "type": "string",
+          "enum": [
+            "auto",
+            "en",
+            "zh"
+          ],
+          "default": "auto",
+          "description": "Language for generated comments"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.74.0",
+    "@types/node": "16.x",
+    "typescript": "^4.9.4"
+  },
+  "dependencies": {
+    "axios": "^1.6.0"
+  }
+}
+
