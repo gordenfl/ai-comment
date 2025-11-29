@@ -1,9 +1,9 @@
 {
-    "name": "Gordon AI Comment Generator",
+    "name": "gordon-ai-comment-generator",
     "displayName": "Gordon AI Comment Generator",
     "description": "AI-powered code comment generator for C++, Python, Lua, Java, JavaScript, and TypeScript",
     "version": "0.1.0",
-    "publisher": "gordenfl",
+    "publisher": "Gordon-Code-Commenter",
     "author": {
         "name": "Yi Liu"
     },
@@ -44,6 +44,11 @@
     "main": "./out/extension.js",
     "contributes": {
         "commands": [
+            {
+                "command": "ai-comment.openSettings",
+                "title": "Open Settings",
+                "category": "AI Comment"
+            },
             {
                 "command": "ai-comment.generateComment",
                 "title": "Generate Comment for Selection",
@@ -109,8 +114,8 @@
         "vscode:prepublish": "npm run compile",
         "compile": "tsc -p ./",
         "watch": "tsc -watch -p ./",
-        "package": "vsce package",
-        "publish": "vsce publish"
+        "package": "npx @vscode/vsce package",
+        "publish": "npx @vscode/vsce publish"
     },
     "devDependencies": {
         "@types/vscode": "^1.74.0",

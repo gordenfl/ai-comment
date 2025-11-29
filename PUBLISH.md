@@ -62,16 +62,32 @@ VSCode 市场使用 Azure DevOps 进行身份验证和发布管理。
 
 ## 安装发布工具
 
-安装 Visual Studio Code Extension Manager (vsce)：
+**推荐方式：使用 npx（无需全局安装，避免权限问题）**
+
+项目已配置为使用 `npx`，无需全局安装。直接使用以下命令：
 
 ```bash
-npm install -g @vscode/vsce
+npm run package   # 打包插件
+npm run publish   # 发布插件
 ```
 
-或者使用 npx（不需要全局安装）：
+**或者手动使用 npx：**
 
 ```bash
 npx @vscode/vsce package
+npx @vscode/vsce publish
+```
+
+**如果需要全局安装（需要管理员权限）：**
+
+```bash
+# macOS/Linux
+sudo npm install -g @vscode/vsce
+
+# 或者使用 npm 配置前缀避免权限问题
+npm config set prefix ~/.npm-global
+export PATH=~/.npm-global/bin:$PATH
+npm install -g @vscode/vsce
 ```
 
 ## 发布步骤
@@ -117,6 +133,7 @@ vsce publish
 ```
 
 首次发布时会要求输入：
+
 - **Personal Access Token**: 输入步骤 2 中创建的 PAT
 
 #### 方法二：通过网页上传
@@ -140,17 +157,20 @@ vsce publish
 当需要发布新版本时：
 
 1. 更新 `package.json` 中的 `version` 字段（遵循 [语义化版本](https://semver.org/)）：
+
    ```json
    "version": "0.1.1"  // 例如：修复 bug 用 0.1.1，新功能用 0.2.0
    ```
 
 2. 编译并打包：
+
    ```bash
    npm run compile
    npm run package
    ```
 
 3. 发布：
+
    ```bash
    npm run publish
    ```
@@ -185,6 +205,7 @@ A: 在 [发布者管理页面](https://marketplace.visualstudio.com/manage) 找�
 
 **Q: 可以发布私有扩展吗？**
 A: VSCode 市场只支持公开扩展。如果需要私有扩展，可以：
+
 - 使用 `.vsix` 文件手动分发
 - 使用私有扩展市场（如 GitHub Packages）
 
@@ -211,4 +232,3 @@ A: VSCode 市场只支持公开扩展。如果需要私有扩展，可以：
 ---
 
 祝你发布顺利！🎉
-

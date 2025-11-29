@@ -30,15 +30,31 @@ npm run compile
 
 ## 配置
 
-在使用插件之前，需要配置 AI API 密钥：
+**重要：在使用插件之前，必须先配置 AI API 密钥！**
 
-1. 打开 VSCode 设置（`Cmd/Ctrl + ,`）
-2. 搜索 "AI Comment"
-3. 配置以下设置：
-   - **ai-comment.apiProvider**: AI 服务提供商（openai、anthropic 或 custom）
-   - **ai-comment.apiKey**: API 密钥
-   - **ai-comment.model**: 使用的模型（默认：gpt-3.5-turbo）
-   - **ai-comment.language**: 注释语言（auto、en、zh）
+### 快速配置
+
+1. **方法一：通过命令面板**
+   - 按 `Cmd/Ctrl + Shift + P` 打开命令面板
+   - 输入 "AI Comment: Open Settings"
+   - 配置你的 API 密钥
+
+2. **方法二：通过设置界面**
+   - 打开 VSCode 设置（`Cmd/Ctrl + ,`）
+   - 搜索 "AI Comment"
+   - 配置以下设置：
+     - **ai-comment.apiProvider**: AI 服务提供商（openai、anthropic 或 custom）
+     - **ai-comment.apiKey**: API 密钥（**必填**）
+     - **ai-comment.model**: 使用的模型（默认：gpt-3.5-turbo）
+     - **ai-comment.language**: 注释语言（auto、en、zh）
+
+### 未配置时的提示
+
+如果未配置 API 密钥，当你尝试生成注释时，插件会：
+
+- 显示友好的提示信息
+- 提供"打开设置"按钮，一键跳转到配置页面
+- 不会执行任何操作，避免产生错误
 
 ### 配置示例
 
@@ -51,6 +67,11 @@ npm run compile
 }
 ```
 
+### 获取 API 密钥
+
+- **OpenAI**: 访问 [OpenAI API Keys](https://platform.openai.com/api-keys) 创建 API 密钥
+- **Anthropic (Claude)**: 访问 [Anthropic API Keys](https://console.anthropic.com/settings/keys) 创建 API 密钥
+
 ## 使用方法
 
 ### 为选中代码生成注释
@@ -59,10 +80,18 @@ npm run compile
 2. 使用快捷键 `Cmd+Shift+C` (Mac) 或 `Ctrl+Shift+C` (Windows/Linux)
 3. 或者通过命令面板（`Cmd/Ctrl + Shift + P`）运行 "AI Comment: Generate Comment for Selection"
 
+**注意**：如果未配置 API 密钥，会提示你进行配置。
+
 ### 为整个文件生成注释
 
 1. 打开要添加注释的文件
 2. 通过命令面板运行 "AI Comment: Generate Comments for Entire File"
+
+**注意**：如果未配置 API 密钥，会提示你进行配置。
+
+### 快速打开设置
+
+- 通过命令面板运行 "AI Comment: Open Settings" 快速打开配置页面
 
 ## 支持的语言
 

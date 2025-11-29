@@ -19,6 +19,14 @@ export function activate(context: vscode.ExtensionContext) {
         })
     );
 
+    // Register command: Open settings
+    const openSettingsCommand = vscode.commands.registerCommand(
+        'ai-comment.openSettings',
+        async () => {
+            await vscode.commands.executeCommand('workbench.action.openSettings', 'ai-comment.apiKey');
+        }
+    );
+
     // Register command: Generate comment for selection
     const generateCommentCommand = vscode.commands.registerCommand(
         'ai-comment.generateComment',
@@ -26,6 +34,21 @@ export function activate(context: vscode.ExtensionContext) {
             const editor = vscode.window.activeTextEditor;
             if (!editor) {
                 vscode.window.showErrorMessage('No active editor found');
+                return;
+            }
+
+            // Check API key before proceeding
+            const config = vscode.workspace.getConfiguration('ai-comment');
+            const apiKey = config.get<string>('apiKey', '');
+            if (!apiKey || apiKey.trim() === '') {
+                const action = await vscode.window.showWarningMessage(
+                    'AI Comment: API key is not configured. Please configure your AI API key to use this extension.',
+                    'Open Settings',
+                    'Cancel'
+                );
+                if (action === 'Open Settings') {
+                    await vscode.commands.executeCommand('workbench.action.openSettings', 'ai-comment.apiKey');
+                }
                 return;
             }
 
@@ -64,6 +87,21 @@ export function activate(context: vscode.ExtensionContext) {
                 return;
             }
 
+            // Check API key before proceeding
+            const config = vscode.workspace.getConfiguration('ai-comment');
+            const apiKey = config.get<string>('apiKey', '');
+            if (!apiKey || apiKey.trim() === '') {
+                const action = await vscode.window.showWarningMessage(
+                    'AI Comment: API key is not configured. Please configure your AI API key to use this extension.',
+                    'Open Settings',
+                    'Cancel'
+                );
+                if (action === 'Open Settings') {
+                    await vscode.commands.executeCommand('workbench.action.openSettings', 'ai-comment.apiKey');
+                }
+                return;
+            }
+
             const document = editor.document;
             const fullText = document.getText();
 
@@ -93,6 +131,7 @@ export function activate(context: vscode.ExtensionContext) {
         }
     );
 
+    context.subscriptions.push(openSettingsCommand);
     context.subscriptions.push(generateCommentCommand);
     context.subscriptions.push(generateFileCommentsCommand);
 }
@@ -154,7 +193,19 @@ async function generateAndInsertComment(
         if (error.message) {
             errorMessage += `: ${error.message}`;
         }
-        vscode.window.showErrorMessage(errorMessage);
+        
+        // Check if it's an API key error and offer to open settings
+        if (error.message && error.message.includes('API key')) {
+            const action = await vscode.window.showErrorMessage(
+                errorMessage,
+                'Open Settings'
+            );
+            if (action === 'Open Settings') {
+                await vscode.commands.executeCommand('workbench.action.openSettings', 'ai-comment.apiKey');
+            }
+        } else {
+            vscode.window.showErrorMessage(errorMessage);
+        }
     }
 }
 
